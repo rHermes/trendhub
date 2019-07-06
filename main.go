@@ -34,16 +34,15 @@ func main() {
 	}
 	defer c.Close()
 
-	wewant := [][2]string{
-		{LangGo, PeriodDaily},
-		{LangHaskell, PeriodDaily},
+	if err := c.Follow(LangGo); err != nil {
+		log.Fatal(err)
+	}
+	if err := c.Follow(LangRust); err != nil {
+		log.Fatal(err)
 	}
 
-	for _, w := range wewant {
-		fmt.Printf("Printing table for %s on a %s basis.\n", w[0], w[1])
-
-		if err := printTableOfLang(c, w[0], w[1]); err != nil {
-			log.Fatal(err)
-		}
+	if err := c.Refresh(); err != nil {
+		log.Fatal(err)
 	}
+
 }

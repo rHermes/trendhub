@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	bolt "go.etcd.io/bbolt"
@@ -35,6 +38,22 @@ func NewCrawler(dbpath string) (*Crawler, error) {
 		return nil, err
 	}
 
+	// We don't want to check for the existance of buckets everywhere, so we make sure
+	// they are created at the start
+	if err := db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("following"))
+		if err != nil {
+			return err
+		}
+		if _, err := tx.CreateBucketIfNotExists([]byte("language")); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		db.Close()
+		return nil, err
+	}
+
 	return &Crawler{db: db}, nil
 }
 
@@ -50,17 +69,93 @@ func (c *Crawler) getTrendingPage(lang string, period string) ([]TrendingItem, e
 		return nil, err
 	}
 	defer res.Body.Close()
-
 	return parsePage(res.Body)
 }
 
+// Following() returns the languages we are following
+func (c *Crawler) Following() ([]string, error) {
+	var following []string
+
+	if err := c.db.View(func(tx *bolt.Tx) error {
+		bk := tx.Bucket([]byte("following"))
+
+		if err := bk.ForEach(func(k, v []byte) error {
+			following = append(following, string(k))
+			return nil
+		}); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return following, nil
+}
+
+func (c *Crawler) Follow(lang string) error {
+	return c.db.Update(func(tx *bolt.Tx) error {
+		bk := tx.Bucket([]byte("following"))
+		return bk.Put([]byte(lang), nil)
+	})
+}
+
+func (c *Crawler) Unfollow(lang string) error {
+	return c.db.Update(func(tx *bolt.Tx) error {
+		bk := tx.Bucket([]byte("following"))
+		return bk.Delete([]byte(lang))
+	})
+}
+
 func (c *Crawler) Refresh() error {
-	res, err := c.c.Get("https://github.com/trending")
+	fs, err := c.Following()
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
 
+	var buf bytes.Buffer
+
+	for _, f := range fs {
+		fmt.Printf("Refreshing language %s\n", f)
+		periods := []string{PeriodDaily, PeriodWeekly, PeriodMonthly}
+		for _, p := range periods {
+			tis, err := c.getTrendingPage(f, p)
+			if err != nil {
+				return err
+			}
+
+			takenAt := time.Now().UTC().Format(time.RFC3339)
+
+			if err := c.db.Update(func(tx *bolt.Tx) error {
+				lb := tx.Bucket([]byte("language"))
+				llb, err := lb.CreateBucketIfNotExists([]byte(f))
+				if err != nil {
+					return err
+				}
+				hlb, err := llb.CreateBucket([]byte(takenAt))
+				if err != nil {
+					return err
+				}
+
+				// We put these into the buckets
+				for i, ti := range tis {
+					buf.Reset()
+					fmt.Fprintf(&buf, "%02d", i)
+
+					j, err := json.Marshal(ti)
+					if err != nil {
+						return err
+					}
+
+					if err := hlb.Put(buf.Bytes(), j); err != nil {
+						return err
+					}
+				}
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
