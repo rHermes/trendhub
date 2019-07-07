@@ -3,13 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 )
 
-func printTableOfLang(c *Crawler, lang, period string) error {
-	tis, err := c.getTrendingPage(lang, period)
-	if err != nil {
-		return err
-	}
+func printTableOfLang(tis []TrendingItem) error {
 	for i, ti := range tis {
 		stars := ti.Stars
 		starsToday := ti.StarsToday
@@ -41,8 +38,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := c.Refresh(); err != nil {
-		log.Fatal(err)
-	}
+	hh := NewWebsite(c)
 
+	http.ListenAndServe(":8099", hh)
 }
