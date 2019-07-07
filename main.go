@@ -31,10 +31,14 @@ func main() {
 	}
 	defer c.Close()
 
-	if err := c.Follow(LangGo); err != nil {
-		log.Fatal(err)
+	follows := []string{LangAny, LangGo, LangRust, LangC, LangCPP, LangJava, LangKotlin, LangHaskell}
+	for _, f := range follows {
+		if err := c.Follow(f); err != nil {
+			log.Fatal(err)
+		}
 	}
-	if err := c.Follow(LangRust); err != nil {
+
+	if err := c.Refresh(); err != nil {
 		log.Fatal(err)
 	}
 

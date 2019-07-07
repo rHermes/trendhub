@@ -35,8 +35,8 @@ func NewWebsite(c *Crawler) http.Handler {
 	r.Use(middleware.WithValue(ctxCrawler, c))
 
 	// Here we create the templates
-	lt := template.Must(template.ParseFiles("templates/layout.tmpl.html"))
-	indexTemplate := template.Must(lt.ParseFiles("templates/index.tmpl.html"))
+	lt := template.Must(template.ParseFiles("templates/layout.html.tmpl"))
+	indexTemplate := template.Must(lt.ParseFiles("templates/index.html.tmpl"))
 
 	r.Use(middleware.WithValue(ctxIdxTmpl, indexTemplate))
 

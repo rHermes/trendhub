@@ -22,6 +22,8 @@ type Crawler struct {
 }
 
 const (
+	LangJava    = "java"
+	LangKotlin  = "kotlin"
 	LangGo      = "go"
 	LangC       = "c"
 	LangCPP     = "c++"
