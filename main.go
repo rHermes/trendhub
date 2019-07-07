@@ -43,8 +43,6 @@ func main() {
 			log.Fatal(err)
 		}
 	*/
-
 	hh := NewWebsite(c)
-
 	http.ListenAndServe(":8099", hh)
 }

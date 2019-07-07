@@ -1,0 +1,28 @@
+.trending-lang-lists {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+	justify-content: space-evenly;
+	align-content: flex-start;
+}
+
+.trending-lang {
+	border: solid;
+	max-width: 500px;
+}
+
+.trending-lang h2 {
+	margin: 0px;
+	background: blue;
+}
+
+.trending-item-list {
+	max-width: 500px;
+}
+
+.trending-item {
+	display: flex;
+	flex-flow: column;
+	border: solid;
+	border-color: green;
+}

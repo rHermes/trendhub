@@ -2,5 +2,12 @@
 
 {{define "body"}}
 	<h1>This is the index page</h1>
-	<h2>Maybe this is enough?</h2>
+	<p>The bolt part of the execution took {{ .BoltDur }}</p>
+
+	<div class="trending-lang-lists">
+	{{ range .Langs }}
+		{{ template "trending-lang" . }}
+	{{ end }}
+	</div>
+	<p>This is period {{ .Period }}</p>
 {{end}}

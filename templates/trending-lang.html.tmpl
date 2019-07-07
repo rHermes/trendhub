@@ -1,0 +1,10 @@
+{{ define "trending-lang" }}
+	<div class="trending-lang">
+		<h2>{{.Lang.StoreName }} - <small>Scraped at {{ .Scraped.String }}</small></h4>
+		<div class="trending-item-list">
+			{{ range .Items }}
+				{{ template "trending-item" . }}
+			{{ end }}
+		</div>
+	</div>
+{{ end }}
