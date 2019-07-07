@@ -1,4 +1,6 @@
 gin-bin
 trendhub
 testdir/*
+tmp/*
+.air.conf
 
