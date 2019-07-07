@@ -21,15 +21,34 @@ type Crawler struct {
 	db *bolt.DB
 }
 
-const (
-	LangJava    = "java"
-	LangKotlin  = "kotlin"
-	LangGo      = "go"
-	LangC       = "c"
-	LangCPP     = "c++"
-	LangRust    = "rust"
-	LangHaskell = "haskell"
+type Language struct {
+	StoreName string
+	QueryName string
+}
 
+var (
+	LangAny     = Language{StoreName: "any", QueryName: ""}
+	LangJava    = Language{StoreName: "java", QueryName: "java"}
+	LangKotlin  = Language{StoreName: "kotlin", QueryName: "kotlin"}
+	LangGo      = Language{StoreName: "go", QueryName: "go"}
+	LangC       = Language{StoreName: "c", QueryName: "c"}
+	LangCPP     = Language{StoreName: "cpp", QueryName: "c++"}
+	LangRust    = Language{StoreName: "rust", QueryName: "rust"}
+	LangHaskell = Language{StoreName: "haskell", QueryName: "haskell"}
+
+	StoreToLang = map[string]Language{
+		LangAny.StoreName:     LangAny,
+		LangJava.StoreName:    LangJava,
+		LangKotlin.StoreName:  LangKotlin,
+		LangGo.StoreName:      LangGo,
+		LangC.StoreName:       LangC,
+		LangCPP.StoreName:     LangCPP,
+		LangRust.StoreName:    LangRust,
+		LangHaskell.StoreName: LangHaskell,
+	}
+)
+
+const (
 	PeriodDaily   = "daily"
 	PeriodWeekly  = "weekly"
 	PeriodMonthly = "monthly"
@@ -71,8 +90,8 @@ func (c *Crawler) Close() error {
 	return c.db.Close()
 }
 
-func (c *Crawler) getTrendingPage(lang string, period string) ([]TrendingItem, error) {
-	u := fmt.Sprintf("https://github.com/trending/%s?since=%s", lang, period)
+func (c *Crawler) getTrendingPage(lang Language, period string) ([]TrendingItem, error) {
+	u := fmt.Sprintf("https://github.com/trending/%s?since=%s", lang.QueryName, period)
 	res, err := c.c.Get(u)
 	if err != nil {
 		return nil, err
@@ -82,14 +101,14 @@ func (c *Crawler) getTrendingPage(lang string, period string) ([]TrendingItem, e
 }
 
 // Following() returns the languages we are following
-func (c *Crawler) Following() ([]string, error) {
-	var following []string
+func (c *Crawler) Following() ([]Language, error) {
+	var following []Language
 
 	if err := c.db.View(func(tx *bolt.Tx) error {
 		bk := tx.Bucket([]byte("following"))
 
 		if err := bk.ForEach(func(k, v []byte) error {
-			following = append(following, string(k))
+			following = append(following, StoreToLang[string(k)])
 			return nil
 		}); err != nil {
 			return err
@@ -101,24 +120,24 @@ func (c *Crawler) Following() ([]string, error) {
 	return following, nil
 }
 
-func (c *Crawler) Follow(lang string) error {
+func (c *Crawler) Follow(lang Language) error {
 	return c.db.Update(func(tx *bolt.Tx) error {
 		bk := tx.Bucket([]byte("following"))
-		return bk.Put([]byte(lang), nil)
+		return bk.Put([]byte(lang.StoreName), nil)
 	})
 }
 
-func (c *Crawler) Unfollow(lang string) error {
+func (c *Crawler) Unfollow(lang Language) error {
 	return c.db.Update(func(tx *bolt.Tx) error {
 		bk := tx.Bucket([]byte("following"))
-		return bk.Delete([]byte(lang))
+		return bk.Delete([]byte(lang.StoreName))
 	})
 }
 
-func (c *Crawler) ScrapeHistory(lang string) ([]time.Time, error) {
+func (c *Crawler) ScrapeHistory(lang Language) ([]time.Time, error) {
 	var times []time.Time
 	err := c.db.View(func(tx *bolt.Tx) error {
-		lb := tx.Bucket([]byte("language")).Bucket([]byte(lang))
+		lb := tx.Bucket([]byte("language")).Bucket([]byte(lang.StoreName))
 		if lb == nil {
 			return nil
 		}
@@ -140,13 +159,13 @@ func (c *Crawler) ScrapeHistory(lang string) ([]time.Time, error) {
 }
 
 // Latest returns the latest scrape, with the time of the scrape
-func (c *Crawler) Latest(lang, period string) ([]TrendingItem, time.Time, error) {
+func (c *Crawler) Latest(lang Language, period string) ([]TrendingItem, time.Time, error) {
 	var tis []TrendingItem
 	var ts time.Time
 	var err error
 
 	err = c.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("language")).Bucket([]byte(lang))
+		b := tx.Bucket([]byte("language")).Bucket([]byte(lang.StoreName))
 		if b == nil {
 			return ErrNoScrapesForLang
 		}
@@ -197,11 +216,11 @@ func (c *Crawler) Refresh() error {
 	var buf bytes.Buffer
 
 	for _, f := range fs {
-		fmt.Printf("Refreshing language %s\n", f)
+		fmt.Printf("Refreshing language %s\n", f.StoreName)
 		periods := []string{PeriodDaily, PeriodWeekly, PeriodMonthly}
 		trends := [][]TrendingItem{}
 		for _, p := range periods {
-			log.Printf("Getting trending page: %s %s\n", f, p)
+			log.Printf("Getting trending page: %s %s\n", f.StoreName, p)
 			tis, err := c.getTrendingPage(f, p)
 			if err != nil {
 				return err
@@ -212,7 +231,7 @@ func (c *Crawler) Refresh() error {
 
 		if err := c.db.Update(func(tx *bolt.Tx) error {
 			lb := tx.Bucket([]byte("language"))
-			llb, err := lb.CreateBucketIfNotExists([]byte(f))
+			llb, err := lb.CreateBucketIfNotExists([]byte(f.StoreName))
 			if err != nil {
 				return err
 			}

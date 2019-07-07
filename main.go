@@ -31,16 +31,18 @@ func main() {
 	}
 	defer c.Close()
 
-	follows := []string{LangAny, LangGo, LangRust, LangC, LangCPP, LangJava, LangKotlin, LangHaskell}
+	follows := []Language{LangAny, LangGo, LangRust, LangC, LangCPP, LangJava, LangKotlin, LangHaskell}
 	for _, f := range follows {
 		if err := c.Follow(f); err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	if err := c.Refresh(); err != nil {
-		log.Fatal(err)
-	}
+	/*
+		if err := c.Refresh(); err != nil {
+			log.Fatal(err)
+		}
+	*/
 
 	hh := NewWebsite(c)
 
