@@ -37,7 +37,7 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 
 	tStart := time.Now()
 
-	fs, err := c.Following()
+	fs, err := c.Follows()
 	if err != nil {
 		http.Error(w, "Some error with loading: "+err.Error(), http.StatusInternalServerError)
 		return

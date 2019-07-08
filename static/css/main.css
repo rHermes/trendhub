@@ -8,16 +8,19 @@
 
 .trending-lang {
 	border: solid;
-	max-width: 500px;
+	width: 500px;
 }
 
-.trending-lang h2 {
+.trending-lang .title-lang {
 	margin: 0px;
-	background: blue;
+	background: grey;
+}
+
+.trending-lang .title-lang small {
+	font-size: 40%;
 }
 
 .trending-item-list {
-	max-width: 500px;
 }
 
 .trending-item {

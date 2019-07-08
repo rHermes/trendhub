@@ -46,6 +46,9 @@ var (
 		LangRust.StoreName:    LangRust,
 		LangHaskell.StoreName: LangHaskell,
 	}
+
+	FollowsBucket  = []byte("follows")
+	LanguageBucket = []byte("language")
 )
 
 const (
@@ -69,11 +72,11 @@ func NewCrawler(dbpath string) (*Crawler, error) {
 	// We don't want to check for the existance of buckets everywhere, so we make sure
 	// they are created at the start
 	if err := db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte("following"))
+		_, err := tx.CreateBucketIfNotExists(FollowsBucket)
 		if err != nil {
 			return err
 		}
-		if _, err := tx.CreateBucketIfNotExists([]byte("language")); err != nil {
+		if _, err := tx.CreateBucketIfNotExists(LanguageBucket); err != nil {
 			return err
 		}
 		return nil
@@ -100,12 +103,12 @@ func (c *Crawler) getTrendingPage(lang Language, period string) ([]TrendingItem,
 	return parsePage(res.Body)
 }
 
-// Following() returns the languages we are following
-func (c *Crawler) Following() ([]Language, error) {
+// Follows() returns the languages we are following
+func (c *Crawler) Follows() ([]Language, error) {
 	var following []Language
 
 	if err := c.db.View(func(tx *bolt.Tx) error {
-		bk := tx.Bucket([]byte("following"))
+		bk := tx.Bucket(FollowsBucket)
 
 		if err := bk.ForEach(func(k, v []byte) error {
 			following = append(following, StoreToLang[string(k)])
@@ -122,14 +125,14 @@ func (c *Crawler) Following() ([]Language, error) {
 
 func (c *Crawler) Follow(lang Language) error {
 	return c.db.Update(func(tx *bolt.Tx) error {
-		bk := tx.Bucket([]byte("following"))
+		bk := tx.Bucket(FollowsBucket)
 		return bk.Put([]byte(lang.StoreName), nil)
 	})
 }
 
 func (c *Crawler) Unfollow(lang Language) error {
 	return c.db.Update(func(tx *bolt.Tx) error {
-		bk := tx.Bucket([]byte("following"))
+		bk := tx.Bucket(FollowsBucket)
 		return bk.Delete([]byte(lang.StoreName))
 	})
 }
@@ -137,7 +140,7 @@ func (c *Crawler) Unfollow(lang Language) error {
 func (c *Crawler) ScrapeHistory(lang Language) ([]time.Time, error) {
 	var times []time.Time
 	err := c.db.View(func(tx *bolt.Tx) error {
-		lb := tx.Bucket([]byte("language")).Bucket([]byte(lang.StoreName))
+		lb := tx.Bucket(LanguageBucket).Bucket([]byte(lang.StoreName))
 		if lb == nil {
 			return nil
 		}
@@ -165,7 +168,7 @@ func (c *Crawler) Latest(lang Language, period string) ([]TrendingItem, time.Tim
 	var err error
 
 	err = c.db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("language")).Bucket([]byte(lang.StoreName))
+		b := tx.Bucket(LanguageBucket).Bucket([]byte(lang.StoreName))
 		if b == nil {
 			return ErrNoScrapesForLang
 		}
@@ -208,7 +211,7 @@ func (c *Crawler) GetScrape(lang, period string, ts time.Time) ([]TrendingItem, 
 }
 
 func (c *Crawler) Refresh() error {
-	fs, err := c.Following()
+	fs, err := c.Follows()
 	if err != nil {
 		return err
 	}
@@ -216,7 +219,7 @@ func (c *Crawler) Refresh() error {
 	var buf bytes.Buffer
 
 	for _, f := range fs {
-		fmt.Printf("Refreshing language %s\n", f.StoreName)
+		log.Printf("Refreshing language %s\n", f.StoreName)
 		periods := []string{PeriodDaily, PeriodWeekly, PeriodMonthly}
 		trends := [][]TrendingItem{}
 		for _, p := range periods {
@@ -230,7 +233,7 @@ func (c *Crawler) Refresh() error {
 		takenAt := time.Now().UTC().Format(time.RFC3339)
 
 		if err := c.db.Update(func(tx *bolt.Tx) error {
-			lb := tx.Bucket([]byte("language"))
+			lb := tx.Bucket(LanguageBucket)
 			llb, err := lb.CreateBucketIfNotExists([]byte(f.StoreName))
 			if err != nil {
 				return err
@@ -332,11 +335,14 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 
 		// forks
 		q = s.Find(fmt.Sprintf(`a[href="%s/network/members"]`, titlelink))
-		if q.Length() != 1 {
+		forksRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
+		if q.Length() == 0 {
+			// If there is no forks, we set this to 0
+			forksRaw = "0"
+		} else if q.Length() != 1 {
 			outerErr = fmt.Errorf("%d: We expect exactly one members link", i)
 			return false
 		}
-		forksRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
 		forks, err := strconv.Atoi(forksRaw)
 		if err != nil {
 			outerErr = fmt.Errorf("%d: We couldn't convert forksRaw to forks: %s", i, err.Error())

@@ -1,6 +1,6 @@
 {{ define "trending-lang" }}
 	<div class="trending-lang">
-		<h2>{{.Lang.StoreName }} - <small>Scraped at {{ .Scraped.String }}</small></h4>
+		<h1 class="title-lang">{{.Lang.StoreName }} <small>Scraped at {{ .Scraped.String }}</small></h1>
 		<div class="trending-item-list">
 			{{ range .Items }}
 				{{ template "trending-item" . }}
