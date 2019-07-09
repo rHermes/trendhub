@@ -16,7 +16,7 @@ var (
 func printTableOfLang(tis []TrendingItem) error {
 	for i, ti := range tis {
 		stars := ti.Stars
-		starsToday := ti.StarsToday
+		starsToday := ti.StarsIncrease
 		forks := ti.Forks
 		lang := ti.Language
 		titlelink := ti.RepoOwner + "/" + ti.RepoName

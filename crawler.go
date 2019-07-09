@@ -275,7 +275,7 @@ type TrendingItem struct {
 	Language    string
 	Forks       int
 	Stars       int
-	StarsToday  int
+	StarsIncrease  int
 }
 
 func parsePage(body io.Reader) ([]TrendingItem, error) {
@@ -371,7 +371,7 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 			RepoOwner:   repoOwner,
 			RepoName:    repoName,
 			Stars:       stars,
-			StarsToday:  starsToday,
+			StarsIncrease:  starsToday,
 			Forks:       forks,
 			Description: descr,
 			Language:    lang,

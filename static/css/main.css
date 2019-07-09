@@ -7,13 +7,18 @@
 }
 
 .trending-lang {
-	border: solid;
-	width: 500px;
+	border: unset;
+	width: 400px;
+	margin: 10px 0;
 }
 
 .trending-lang .title-lang {
-	margin: 0px;
-	background: grey;
+	border: solid;
+	border-width: 2px;
+	background: yellow;
+	margin: 0;
+	padding: 0 10px;
+	font-size: 1.6em;
 }
 
 .trending-lang .title-lang small {
@@ -21,11 +26,77 @@
 }
 
 .trending-item-list {
+	display: flex;
+	flex-flow: column;
+	border: unset;
+	border-color: green;
 }
 
 .trending-item {
-	display: flex;
-	flex-flow: column;
 	border: solid;
-	border-color: green;
+	border-width: 1px;
+	border-color: black;
+	padding: 2px 5px;
+}
+
+.trending-item p {
+	margin: 0px;
+}
+
+.repo-description {
+	font-size: 60%;
+}
+
+.trending-item-under-bar {
+	display: flex;
+	justify-content: space-between;
+}
+
+.trending-item-language {
+}
+
+.trending-item-fork-count {
+}
+
+.trending-item-star-count {
+}
+
+.trending-item-star-increase {
+
+}
+
+
+/* FROM https://icomoon.io/app/ */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+/* ==========================================
+Single-colored icons can be modified like so:
+.icon-name {
+  font-size: 32px;
+  color: red;
+}
+========================================== */
+
+.icon-book {
+  width: 0.9306640625em;
+}
+
+.icon-star {
+  /*width: 0.9287109375em; */
+  width: 1.1em;
+  stroke-width: 1px;
+  stroke: black;
+  color: yellow;
+
+}
+
+.icon-code-fork {
+  width: 0.5712890625em;
 }

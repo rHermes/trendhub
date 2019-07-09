@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"compress/flate"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -77,11 +78,15 @@ func NewWebsite(c *Crawler) http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	// r.Use(middleware.NewCompressor(flate.BestSpeed))
+	r.Use(middleware.Compress(flate.BestSpeed))
+
 	r.Use(middleware.WithValue(ctxCrawler, c))
 
 	// Here we create the templates
 	lt := template.Must(template.ParseFiles(
 		"templates/layout.html.tmpl",
+		"templates/icon-defs.html.tmpl",
 		"templates/trending-lang.html.tmpl",
 		"templates/trending-item.html.tmpl",
 	))
@@ -112,6 +117,9 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 	}
 	path += "*"
 
+	r.Head(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	}))
