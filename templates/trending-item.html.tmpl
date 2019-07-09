@@ -1,26 +1,24 @@
 {{- define "trending-item" -}}
 	<div class="trending-item">
 		<a class="trending-item-title" href="https://github.com/{{.RepoOwner}}/{{.RepoName}}">
-			<p>{{ .RepoOwner }}/{{ .RepoName}}</p>
+			{{- .RepoOwner -}}/{{- .RepoName -}}
 		</a>
 
 		<p class="repo-description">
-		{{ .Description }}
+			{{- .Description -}}
 		</p>
 		<div class="trending-item-under-bar">
 			<div class="trending-item-language">
-			{{ .Language }}
+				{{- .Language -}}
 			</div>
 			<div class="trending-item-fork-count">
-				{{ .Forks }} 
-				<svg class="icon icon-code-fork"><use xlink:href="#icon-code-fork"></use></svg>
+				<span>{{- .Forks -}}</span><svg class="icon icon-code-fork"><use xlink:href="#icon-code-fork"></use></svg>
 			</div>
 			<div class="trending-item-star-count">
-				{{ .Stars }}
-				<svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+				<span>{{- .Stars -}}</span><svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
 			</div>
 			<div class="trending-item-star-increase">
-				+{{.StarsIncrease}}
+				<span>{{- .StarsIncrease -}}</span><svg class="icon icon-long-arrow-up"><use xlink:href="#icon-long-arrow-up"></use></svg>
 			</div>
 		</div>
 	</div>
