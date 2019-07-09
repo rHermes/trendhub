@@ -1,13 +1,13 @@
 {{ define "trending-lang" }}
 	<div class="trending-lang">
-		<h1 class="title-lang">{{.Lang.StoreName }} <small>Scraped at {{ .Scraped.String }}</small></h1>
+		<div class="trending-lang-title-box">
+			<h1 class="trending-lang-title">{{.Lang.StoreName }}</h1>
+			<h1 class="trending-lang-scraped">Scraped at {{ .Scraped.String }}</h1>
+		</div>
 		<div class="trending-item-list">
-			{{ range $idx, $val := .Items }}
-				{{ if (ne $idx 0) }}
-					<div class="trending-item-list-separator"></div>
-				{{ end }}
-				{{ template "trending-item" $val }}
-			{{ end }}
+			{{- range .Items -}}
+				{{- template "trending-item" . -}}
+			{{- end -}}
 		</div>
 	</div>
 {{ end }}
