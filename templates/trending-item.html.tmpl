@@ -1,6 +1,6 @@
 {{- define "trending-item" -}}
 	<div class="trending-item">
-		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}">
+		<a class="trending-item-title" href="https://github.com/{{.RepoOwner}}/{{.RepoName}}">
 			<p>{{ .RepoOwner }}/{{ .RepoName}}</p>
 		</a>
 
@@ -16,8 +16,11 @@
 				<svg class="icon icon-code-fork"><use xlink:href="#icon-code-fork"></use></svg>
 			</div>
 			<div class="trending-item-star-count">
-				{{ .Stars }} (+{{ .StarsIncrease }})
+				{{ .Stars }}
 				<svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+			</div>
+			<div class="trending-item-star-increase">
+				+{{.StarsIncrease}}
 			</div>
 		</div>
 	</div>

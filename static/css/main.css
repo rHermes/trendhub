@@ -26,10 +26,12 @@
 }
 
 .trending-item-list {
-	display: flex;
-	flex-flow: column;
+	display: grid;
+	grid-template-columns: max-content 2fr 2fr 1fr;
+
 	border: unset;
 	border-color: green;
+
 }
 
 .trending-item {
@@ -37,32 +39,51 @@
 	border-width: 1px;
 	border-color: black;
 	padding: 2px 5px;
+	
+	display: grid;
+	grid-column: 1 / 5;
+	grid-template-columns: subgrid;
 }
 
-.trending-item p {
+.trending-item-title {
+	grid-column: 1 / 5;
+	grid-row: 1;
+}
+
+.trending-item-title p {
 	margin: 0px;
 }
-
 .repo-description {
 	font-size: 60%;
+	grid-column: 1 / 5;
+	grid-row: 2;
 }
 
 .trending-item-under-bar {
-	display: flex;
-	justify-content: space-between;
+	display: grid;
+	grid-column: 1/5;
+	grid-row: 3;
+	grid-template-columns: subgrid;
 }
 
 .trending-item-language {
+	grid-column: 1;
+	justify-self: start;
 }
 
 .trending-item-fork-count {
+	grid-column: 2;
+	justify-self: end;
 }
 
 .trending-item-star-count {
+	grid-column: 3;
+	justify-self: end;
 }
 
 .trending-item-star-increase {
-
+	grid-column: 4;
+	justify-self: end;
 }
 
 
