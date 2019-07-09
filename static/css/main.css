@@ -46,13 +46,15 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .trending-item-list {
+	background: snow;
 }
 
-.trending-item {
-	background: snow;
-	border-bottom: solid;
-	border-bottom-width: 1px;
-	border-color: black;
+.trending-item-list-separator {
+	margin: 2px auto;
+	width: 90%;
+	border-top: solid;
+	border-width: 0.1em;
+	border-color: gray;
 }
 
 .trending-item-title {

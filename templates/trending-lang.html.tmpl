@@ -2,8 +2,11 @@
 	<div class="trending-lang">
 		<h1 class="title-lang">{{.Lang.StoreName }} <small>Scraped at {{ .Scraped.String }}</small></h1>
 		<div class="trending-item-list">
-			{{ range .Items }}
-				{{ template "trending-item" . }}
+			{{ range $idx, $val := .Items }}
+				{{ if (ne $idx 0) }}
+					<div class="trending-item-list-separator"></div>
+				{{ end }}
+				{{ template "trending-item" $val }}
 			{{ end }}
 		</div>
 	</div>
