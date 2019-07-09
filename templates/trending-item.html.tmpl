@@ -1,6 +1,7 @@
 {{- define "trending-item" -}}
 	<div class="trending-item">
 		<a class="trending-item-title" href="https://github.com/{{.RepoOwner}}/{{.RepoName}}">
+		    <svg class="icon icon-book"><use xlink:href="#icon-book"></use></svg>
 			{{- .RepoOwner -}}/{{- .RepoName -}}
 		</a>
 

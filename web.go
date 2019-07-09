@@ -79,7 +79,7 @@ func NewWebsite(c *Crawler) http.Handler {
 	r.Use(middleware.Recoverer)
 
 	// r.Use(middleware.NewCompressor(flate.BestSpeed))
-	r.Use(middleware.Compress(flate.BestSpeed))
+	r.Use(middleware.Compress(flate.BestCompression))
 
 	r.Use(middleware.WithValue(ctxCrawler, c))
 
