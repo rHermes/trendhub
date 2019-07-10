@@ -27,26 +27,6 @@ type Language struct {
 }
 
 var (
-	LangAny     = Language{StoreName: "any", QueryName: ""}
-	LangJava    = Language{StoreName: "java", QueryName: "java"}
-	LangKotlin  = Language{StoreName: "kotlin", QueryName: "kotlin"}
-	LangGo      = Language{StoreName: "go", QueryName: "go"}
-	LangC       = Language{StoreName: "c", QueryName: "c"}
-	LangCPP     = Language{StoreName: "cpp", QueryName: "c++"}
-	LangRust    = Language{StoreName: "rust", QueryName: "rust"}
-	LangHaskell = Language{StoreName: "haskell", QueryName: "haskell"}
-
-	StoreToLang = map[string]Language{
-		LangAny.StoreName:     LangAny,
-		LangJava.StoreName:    LangJava,
-		LangKotlin.StoreName:  LangKotlin,
-		LangGo.StoreName:      LangGo,
-		LangC.StoreName:       LangC,
-		LangCPP.StoreName:     LangCPP,
-		LangRust.StoreName:    LangRust,
-		LangHaskell.StoreName: LangHaskell,
-	}
-
 	FollowsBucket  = []byte("follows")
 	LanguageBucket = []byte("language")
 )
@@ -269,13 +249,13 @@ func (c *Crawler) Refresh() error {
 }
 
 type TrendingItem struct {
-	RepoOwner   string
-	RepoName    string
-	Description string
-	Language    string
-	Forks       int
-	Stars       int
-	StarsIncrease  int
+	RepoOwner     string
+	RepoName      string
+	Description   string
+	Language      string
+	Forks         int
+	Stars         int
+	StarsIncrease int
 }
 
 func parsePage(body io.Reader) ([]TrendingItem, error) {
@@ -368,13 +348,13 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 		}
 
 		ti := TrendingItem{
-			RepoOwner:   repoOwner,
-			RepoName:    repoName,
-			Stars:       stars,
-			StarsIncrease:  starsToday,
-			Forks:       forks,
-			Description: descr,
-			Language:    lang,
+			RepoOwner:     repoOwner,
+			RepoName:      repoName,
+			Stars:         stars,
+			StarsIncrease: starsToday,
+			Forks:         forks,
+			Description:   descr,
+			Language:      lang,
 		}
 		items = append(items, ti)
 
