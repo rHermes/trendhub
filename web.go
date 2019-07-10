@@ -33,16 +33,46 @@ type IndexPageCtx struct {
 func indexPage(w http.ResponseWriter, r *http.Request) {
 	c := r.Context().Value(ctxCrawler).(*Crawler)
 
+	qv := r.URL.Query()
+	qLangs := strings.Split(qv.Get("langs"), ",")
+	qPeriod := qv.Get("period")
+
 	var pctx IndexPageCtx
-	pctx.Period = PeriodDaily
+
+	switch qPeriod {
+	case PeriodDaily, PeriodMonthly, PeriodWeekly:
+		pctx.Period = qPeriod
+	default:
+		pctx.Period = PeriodDaily
+	}
+
+	var fs []Language
+	var err error
+	if qv.Get("langs") == "" {
+		fs, err = c.Follows()
+		if err != nil {
+			http.Error(w, "Some error with loading: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		seenLang := make(map[string]struct{}, 0)
+		for _, s := range qLangs {
+			if _, ok := seenLang[s]; ok {
+				continue
+			}
+
+			f, ok := StoreToLang[s]
+			if !ok {
+				http.Error(w, "Invalid language specified.", http.StatusBadRequest)
+				return
+			}
+			seenLang[s] = struct{}{}
+			fs = append(fs, f)
+		}
+
+	}
 
 	tStart := time.Now()
-
-	fs, err := c.Follows()
-	if err != nil {
-		http.Error(w, "Some error with loading: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
 
 	for _, f := range fs {
 		tis, ts, err := c.Latest(f, pctx.Period)
