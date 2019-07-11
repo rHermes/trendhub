@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
@@ -88,13 +89,30 @@ func cmdRefresh(c *Crawler) error {
 	return c.Refresh()
 }
 
+func cmdServeAndRefresh(c *Crawler) error {
+	go func(c *Crawler) {
+		for {
+			if err := c.Refresh(); err != nil {
+				log.Printf("[ERR] Couldn't refresh: %s\n", err.Error())
+			}
+			time.Sleep(4 * time.Hour)
+		}
+	}(c)
+	hh := NewWebsite(c)
+	if err := http.ListenAndServe(":8099", hh); err != nil {
+		return err
+	}
+	return nil
+}
+
 func Usage() {
 	fmt.Println(`use one of the commands:
 	follow <lang to follow>+
 	follows
 	unfollow <lang to unfollow>+
 	refresh 
-	serve`)
+	serve
+	serveandrefresh`)
 	os.Exit(1)
 }
 
@@ -130,6 +148,12 @@ func main() {
 			Usage()
 		}
 		fx = cmdRefresh
+
+	case "serveandrefresh":
+		if flag.NArg() != 1 {
+			Usage()
+		}
+		fx = cmdServeAndRefresh
 	default:
 		Usage()
 	}
