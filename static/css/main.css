@@ -1,5 +1,9 @@
 /* GLobal stuff */
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* System Fonts as used by GitHub */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -16,18 +20,63 @@ a:focus { text-decoration: none; color: royalblue ; }
   display: none;
 }
 
+/* layout */
+#main {
+  display: flex;
+}
+
+/* side bar */
+#sidebar {
+  top: 10px;
+  margin 0 10px;
+  position: -webkit-sticky;
+  position: sticky;
+
+  max-width: 15em;
+  min-width: 15em;
+  max-height: 98vh;
+  min-height: 98vh;
+
+}
+
+.navbar-title-box {
+  padding: 0px 10px;
+  margin: 0 10px;
+  border-radius: 2px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background: #FF9800;
+}
+
+.navbar-title {
+  margin: 0;
+}
+
+.navbar {
+}
+
+.navbar-list-box {
+  background: snow;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  margin: 0 10px;
+}
+
+
+.navbar-lang {
+  margin: 0px 0px;
+  padding: 4px 10px;
+}
+
+.navbar-lang-active {
+  background: #FF9800;
+}
+
 /* Trending stuff */
 .trending-lang-lists {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  align-content: flex-start;
 }
 
 .trending-lang {
-  width: 400px;
-  margin: 10px 0;
+  margin: 10px 10px;
 }
 
 .trending-lang-title-box {
@@ -40,9 +89,15 @@ a:focus { text-decoration: none; color: royalblue ; }
   border-radius: 2px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   background: #FF9800;
+
+  /* This is so that the language will stay on top */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 10px;
 }
 
 .trending-lang-title {
+
   margin: 0;
   font-size: 1.6em;
   font-weight: 800;

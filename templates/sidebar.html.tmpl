@@ -1,0 +1,17 @@
+{{ define "sidebar" }}
+	<div class="navbar-title-box">
+		<h1 class="navbar-title">Languages</h1>
+	</div>
+
+	<nav class="navbar-list-box">
+		<ol class="navbar">
+			{{ range .Langs }}
+				<li id="navbar-lang-{{.Lang.StoreName}}" class="navbar-lang">
+					<a href="#lang-{{ .Lang.StoreName }}">
+						{{ .Lang.StoreName }}
+					</a>
+				</li>
+			{{ end }}
+		</ol>
+	</nav>
+{{ end }}

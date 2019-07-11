@@ -196,6 +196,7 @@ func NewWebsite(c *Crawler) http.Handler {
 	lt := template.Must(template.ParseFiles(
 		"templates/layout.html.tmpl",
 		"templates/icon-defs.html.tmpl",
+		"templates/sidebar.html.tmpl",
 		"templates/trending-lang.html.tmpl",
 		"templates/trending-item.html.tmpl",
 	))

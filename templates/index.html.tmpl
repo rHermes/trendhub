@@ -5,14 +5,31 @@
 {{ end }}
 
 {{ define "scripts" }}
+<script type="text/javascript">
+	const LANGUAGES = [
+		{{- range $idx, $lang := .Langs -}}
+			{{- if ne $idx 0 -}} , {{- end -}}
+			"{{ $lang.Lang.StoreName }}"
+		{{- end -}}
+		];
+</script>
 <script type="text/javascript" src="/static/js/main.js"></script>
 {{ end }}
 
 {{define "body"}}
 	{{ template "icon-defs" }}
-	<div class="trending-lang-lists">
-	{{ range .Langs }}
-		{{ template "trending-lang" . }}
-	{{ end }}
+
+	<div id="main">
+		<div id="sidebar">
+			{{ template "sidebar" . }}
+		</div>
+
+		<div id="content">
+			<div class="trending-lang-lists">
+				{{ range .Langs }}
+					{{ template "trending-lang" . }}
+				{{ end }}
+			</div>
+		</div>
 	</div>
 {{end}}
