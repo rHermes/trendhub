@@ -12,6 +12,10 @@ a:visited { text-decoration: none; color: royalblue }
 a:hover { text-decoration: underline; color: royalblue; }
 a:focus { text-decoration: none; color: royalblue ; }
 
+.cloaked {
+  display: none;
+}
+
 /* Trending stuff */
 .trending-lang-lists {
   display: flex;

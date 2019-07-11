@@ -1,6 +1,6 @@
 {{ define "trending-lang" }}
-	<div class="trending-lang">
-		<div class="trending-lang-title-box">
+	<div class="trending-lang" id="lang-{{ .Lang.StoreName }}">
+		<div class="trending-lang-title-box" onClick='langTitleClick("{{.Lang.StoreName}}")'>
 			<h1 class="trending-lang-title">{{.Lang.StoreName }}</h1>
 			<h1 class="trending-lang-scraped">Scraped at {{ .Scraped.String }}</h1>
 		</div>
