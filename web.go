@@ -27,12 +27,14 @@ type LanguageScrape struct {
 }
 
 type IndexPageCtx struct {
+	Periods []string
 	Period  string
 	Langs   []LanguageScrape
 	BoltDur time.Duration
 }
 
 type ApiIndexRet struct {
+	Periods []string
 	Period  string
 	Langs   []LanguageScrape
 	BoltDur time.Duration
@@ -53,6 +55,7 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 	default:
 		pctx.Period = PeriodDaily
 	}
+	pctx.Periods = []string{PeriodDaily, PeriodWeekly, PeriodMonthly}
 
 	var fs []Language
 	var err error
@@ -124,6 +127,7 @@ func apiIndex(w http.ResponseWriter, r *http.Request) {
 	default:
 		pctx.Period = PeriodDaily
 	}
+	pctx.Periods = []string{PeriodDaily, PeriodWeekly, PeriodMonthly}
 
 	var fs []Language
 	var err error

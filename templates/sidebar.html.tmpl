@@ -1,5 +1,24 @@
 {{ define "sidebar" }}
 	<div class="navbar-title-box">
+		<h1 class="navbar-title">Period</h1>
+	</div>
+
+	<nav class="navbar-period-box">
+		<ol class="navbar-period-list">
+			{{- range .Periods -}}
+				{{- $navclass := "" -}}
+				{{- if (eq $.Period . ) -}}
+					{{- $navclass = " navbar-period-active" -}}
+				{{- end -}}
+
+				<li class="navbar-period{{ $navclass }}">
+					<a href="/?period={{.}}">{{.}}</a>
+				</li>
+			{{- end -}}
+		</ol>
+	</nav>
+
+	<div class="navbar-title-box">
 		<h1 class="navbar-title">Languages</h1>
 	</div>
 

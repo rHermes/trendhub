@@ -39,6 +39,23 @@ a:focus { text-decoration: none; color: royalblue ; }
 
 }
 
+.navbar-period-box {
+  background: snow;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  margin: 0 10px;
+}
+
+.navbar-period {
+  margin: 0px 0px;
+  padding: 4px 10px;
+}
+
+.navbar-period-active {
+  background: #FF9800;
+}
+
+
 .navbar-title-box {
   padding: 0px 10px;
   margin: 0 10px;
@@ -126,14 +143,13 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .trending-item-title {
-  margin: 0px;
-  padding: 0 4px;
+  font-size: 1.1em;
 } 
 
 .repo-description {
-  font-size: 0.8em;
+  font-size: 0.9em;
   line-height: 1.2em;
-  margin: 4px;
+  margin: 4px 0px;
 }
 
 .trending-item-under-bar {
