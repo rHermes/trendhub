@@ -1,3 +1,11 @@
+/* Variable stuff */
+:root {
+  --header-color: #FF9800;
+  --card-color: snow;
+  --link-color: royalblue;
+  --background-color: #ECEFF1;
+}
+
 /* GLobal stuff */
 
 html {
@@ -8,13 +16,13 @@ html {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
-  background: #ECEFF1;
+  background: var(--background-color);
 }
 
-a { text-decoration: none; color: royalblue; }
-a:visited { text-decoration: none; color: royalblue }
-a:hover { text-decoration: underline; color: royalblue; }
-a:focus { text-decoration: none; color: royalblue ; }
+a { text-decoration: none; color: var(--link-color); }
+a:visited { text-decoration: none; color: var(--link-color); }
+a:hover { text-decoration: underline; color: var(--link-color); }
+a:focus { text-decoration: none; color: var(--link-color); }
 
 .cloaked {
   display: none;
@@ -40,7 +48,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .navbar-period-box {
-  background: snow;
+  background: var(--card-color);
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   margin: 0 10px;
@@ -52,7 +60,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .navbar-period-active {
-  background: #FF9800;
+  background: var(--header-color);
 }
 
 
@@ -61,7 +69,7 @@ a:focus { text-decoration: none; color: royalblue ; }
   margin: 0 10px;
   border-radius: 2px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  background: #FF9800;
+  background: var(--header-color);
 }
 
 .navbar-title {
@@ -72,7 +80,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .navbar-list-box {
-  background: snow;
+  background: var(--card-color);
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   margin: 0 10px;
@@ -85,7 +93,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 }
 
 .navbar-lang-active {
-  background: #FF9800;
+  background: var(--header-color);
 }
 
 /* Trending stuff */
@@ -105,7 +113,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 
   border-radius: 2px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  background: #FF9800;
+  background: var(--header-color);
 
   /* This is so that the language will stay on top */
   position: -webkit-sticky;
@@ -133,7 +141,7 @@ a:focus { text-decoration: none; color: royalblue ; }
 .trending-item {
   margin: 6px 0;
   padding: 6px 10px;
-  background: snow;
+  background: var(--card-color);
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);  
