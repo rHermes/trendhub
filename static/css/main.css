@@ -225,3 +225,11 @@ Single-colored icons can be modified like so:
 .icon-code-fork {
   width: 0.5712890625em;
 }
+
+
+/* mobile site */
+@media all and (max-width: 600px) {
+  #sidebar {
+    display: none;
+  }
+}
