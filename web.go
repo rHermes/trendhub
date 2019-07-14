@@ -109,6 +109,7 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Some error with templates: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	buf.WriteTo(w)
 }
 
