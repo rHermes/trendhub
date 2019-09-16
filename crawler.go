@@ -315,7 +315,7 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 		}
 
 		// Stargazers
-		q = s.Find(fmt.Sprintf(`a[href="%s/stargazers"]`, titlelink))
+		q = s.Find(fmt.Sprintf(`a[href="%s/stargazers.%s"]`, titlelink, repoName))
 		if q.Length() != 1 {
 			outerErr = fmt.Errorf("%d: We expected exactly one stargazers link", i)
 			return false
@@ -328,7 +328,7 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 		}
 
 		// forks
-		q = s.Find(fmt.Sprintf(`a[href="%s/network/members"]`, titlelink))
+		q = s.Find(fmt.Sprintf(`a[href="%s/network/members.%s"]`, titlelink, repoName))
 		forksRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
 		if q.Length() == 0 {
 			// If there is no forks, we set this to 0
