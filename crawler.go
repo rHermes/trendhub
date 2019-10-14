@@ -315,16 +315,22 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 		}
 
 		// Stargazers
+		stars := 0
+
 		q = s.Find(fmt.Sprintf(`a[href="%s/stargazers.%s"]`, titlelink, repoName))
-		if q.Length() != 1 {
+		if q.Length() > 1 {
 			outerErr = fmt.Errorf("%d: We expected exactly one stargazers link", i)
 			return false
-		}
-		starsRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
-		stars, err := strconv.Atoi(starsRaw)
-		if err != nil {
-			outerErr = fmt.Errorf("%d: We couldn't convert starsRaw to stars: %s", i, err.Error())
-			return false
+		} else if q.Length() == 1 {
+
+			starsRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
+			stars, err = strconv.Atoi(starsRaw)
+			if err != nil {
+				outerErr = fmt.Errorf("%d: We couldn't convert starsRaw to stars: %s", i, err.Error())
+				return false
+			}
+		} else {
+			fmt.Printf("Could not find one stargazers link\n")
 		}
 
 		// forks
@@ -343,22 +349,27 @@ func parsePage(body io.Reader) ([]TrendingItem, error) {
 			return false
 		}
 
+		starsToday := 0
 		q = s.Find("span.float-sm-right")
-		if q.Length() != 1 {
+		if q.Length() > 1 {
 			outerErr = fmt.Errorf("%d: We expected exactly one stars today object", i)
 			return false
-		}
-		starsTodayRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
-		starsPart := strings.Split(starsTodayRaw, " ")
-		if len(starsPart) < 2 {
-			outerErr = fmt.Errorf("%d: We couldn't split up the stars today", i)
-			return false
-		}
+		} else if q.Length() == 1 {
 
-		starsToday, err := strconv.Atoi(starsPart[0])
-		if err != nil {
-			outerErr = fmt.Errorf("%d: We couldn't convert starsTodayRaw to starsToday: %s", i, err.Error())
-			return false
+			starsTodayRaw := strings.ReplaceAll(strings.TrimSpace(q.Text()), ",", "")
+			starsPart := strings.Split(starsTodayRaw, " ")
+			if len(starsPart) < 2 {
+				outerErr = fmt.Errorf("%d: We couldn't split up the stars today", i)
+				return false
+			}
+
+			starsToday, err = strconv.Atoi(starsPart[0])
+			if err != nil {
+				outerErr = fmt.Errorf("%d: We couldn't convert starsTodayRaw to starsToday: %s", i, err.Error())
+				return false
+			}
+		} else {
+			fmt.Printf("Warning: We found no starsToday\n")
 		}
 
 		ti := TrendingItem{
